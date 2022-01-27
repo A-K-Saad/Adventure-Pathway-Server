@@ -3,14 +3,8 @@ const cors = require("cors");
 require("dotenv").config();
 
 const { MongoClient, ObjectId } = require("mongodb");
-const Razorpay = require("razorpay");
 const port = process.env.PORT || 5000;
 const app = express();
-
-const instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY,
-  key_secret: process.env.RAZORPAY_SECRET,
-});
 
 app.use(cors());
 app.use(express.json());
