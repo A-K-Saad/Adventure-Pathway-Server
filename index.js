@@ -52,6 +52,10 @@ const run = async () => {
       res.json(result);
     });
 
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find({}).toArray();
+      res.json(result);
+    });
     //Post Users
     app.post("/users", async (req, res) => {
       const user = req.body;
@@ -67,12 +71,6 @@ const run = async () => {
       const result = await userCollection.updateOne(filter, updateDoc, options);
       res.json(result);
     });
-
-    app.get("/users", async (req, res) => {
-      const result = await userCollection.find({}).toArray();
-      res.json(result);
-    });
-
     //Verify Admin
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -85,7 +83,7 @@ const run = async () => {
       res.json({ admin: isAdmin });
     });
     //Make Admin
-    app.put("/users/admin", async (req, res) => {
+    app.put("/admin", async (req, res) => {
       const user = req.body.request;
       const requester = req.body.requester;
       if (requester) {
@@ -94,7 +92,7 @@ const run = async () => {
         });
         if (requesterAccount.role === "admin") {
           const filter = { email: user };
-          const updateDoc = { $set: { role: "admin" } };
+          const updateDoc = { $set: { role: req.body.role } };
           const result = await userCollection.updateOne(filter, updateDoc);
           res.json(result);
         }
@@ -107,8 +105,16 @@ const run = async () => {
       const result = await blogCollection.insertOne(req.body);
       res.json(result);
     });
-    // Get Paginated Blogs
-
+    // Blogs
+    app.get("/allBlogs", async (req, res) => {
+      const result = await blogCollection.find({}).toArray();
+      res.json(result);
+    });
+    app.get("/allBlogs/:category", async (req, res) => {
+      const category = req.params.category;
+      const result = await blogCollection.find({ status: category }).toArray();
+      res.json(result);
+    });
     // Get Overviews
     app.get("/overview", async (req, res) => {
       const totalUsers = await userCollection.count();
