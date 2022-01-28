@@ -65,6 +65,11 @@ const run = async () => {
       const result = await userCollection.updateOne(filter, updateDoc, options);
       res.json(result);
     });
+    // Get a Specific User
+    app.get("/specificUser/:email", async (req, res) => {
+      const result = await userCollection.findOne({ email: req.params.email });
+      res.json(result);
+    });
     //Verify Admin
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -99,6 +104,23 @@ const run = async () => {
       const result = await blogCollection.insertOne(req.body);
       res.json(result);
     });
+    // Get Paginatd Blogs
+    app.get("/blogs", async (req, res) => {
+      const cursor = blogCollection.find({});
+      const currentPage = parseInt(req.query.currentPage);
+      const size = 10;
+      let blogs;
+      if (currentPage) {
+        blogs = await cursor
+          .skip(currentPage * size)
+          .limit(size)
+          .toArray();
+      } else {
+        blogs = await cursor.toArray();
+      }
+      const count = await cursor.count();
+      res.send({ count, blogs });
+    });
     // Blogs
     app.get("/allBlogs", async (req, res) => {
       const result = await blogCollection.find({}).toArray();
@@ -107,6 +129,19 @@ const run = async () => {
     app.get("/allBlogs/:category", async (req, res) => {
       const category = req.params.category;
       const result = await blogCollection.find({ status: category }).toArray();
+      res.json(result);
+    });
+    app.put("/blogs/:id", async (req, res) => {
+      const blog = req.body;
+      const filter = { _id: ObjectId(req.params.id) };
+      const updateDoc = { $set: blog };
+      const result = await blogCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+    app.delete("/blogs/:id", async (req, res) => {
+      const result = await blogCollection.deleteOne({
+        _id: ObjectId(req.params.id),
+      });
       res.json(result);
     });
     // Get Overviews
