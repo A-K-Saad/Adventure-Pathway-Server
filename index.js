@@ -106,7 +106,9 @@ const run = async () => {
     });
     // Get Paginatd Blogs
     app.get("/blogs", async (req, res) => {
-      const cursor = blogCollection.find({});
+      const cursor = await blogCollection
+        .find({ category: "Approved" })
+        .toArray();
       const currentPage = parseInt(req.query.currentPage);
       const size = 10;
       let blogs;
