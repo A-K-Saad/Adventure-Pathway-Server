@@ -167,6 +167,14 @@ const run = async () => {
       const totalReviews = await reviewCollection.count();
       res.json({ users: totalUsers, blogs: totalBlogs, reviews: totalReviews });
     });
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewCollection.find({}).toArray();
+      res.json(result);
+    });
+    app.post("/reviews", async (req, res) => {
+      const result = await reviewCollection.insertOne(req.body);
+      res.json(result);
+    });
   } catch (error) {
     console.log(error);
   }
