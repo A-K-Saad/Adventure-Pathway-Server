@@ -131,6 +131,12 @@ const run = async () => {
       const result = await blogCollection.find({ status: category }).toArray();
       res.json(result);
     });
+    app.get("/blogs/:id", async (req, res) => {
+      const result = await blogCollection.findOne({
+        _id: ObjectId(req.params.id),
+      });
+      res.json(result);
+    });
     app.put("/blogs/:id", async (req, res) => {
       const blog = req.body;
       const filter = { _id: ObjectId(req.params.id) };
