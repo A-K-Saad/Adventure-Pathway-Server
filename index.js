@@ -150,6 +150,16 @@ const run = async () => {
       });
       res.json(result);
     });
+    app.get("/topBlogs", async (req, res) => {
+      const result = await blogCollection
+        .find({})
+        .sort({
+          likes: -1,
+        })
+        .limit(5)
+        .toArray();
+      res.json(result);
+    });
     // Get Overviews
     app.get("/overview", async (req, res) => {
       const totalUsers = await userCollection.count();
