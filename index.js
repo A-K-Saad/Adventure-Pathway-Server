@@ -152,7 +152,7 @@ const run = async () => {
     });
     app.get("/topBlogs", async (req, res) => {
       const result = await blogCollection
-        .find({})
+        .find({ status: "Approved" })
         .sort({
           likes: -1,
         })
