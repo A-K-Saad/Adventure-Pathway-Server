@@ -70,6 +70,12 @@ const run = async () => {
       const result = await userCollection.findOne({ email: req.params.email });
       res.json(result);
     });
+    app.get("/specificUserId/:id", async (req, res) => {
+      const result = await userCollection.findOne({
+        _id: ObjectId(req.params.id),
+      });
+      res.json(result);
+    });
     //Verify Admin
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -108,7 +114,7 @@ const run = async () => {
     app.get("/blogs", async (req, res) => {
       const cursor = blogCollection.find({ status: "Approved" });
       const currentPage = parseInt(req.query.currentPage);
-      const size = 10;
+      const size = 5;
       let blogs;
       if (currentPage) {
         blogs = await cursor
@@ -156,8 +162,13 @@ const run = async () => {
         .sort({
           likes: -1,
         })
-        .limit(5)
+        .limit(15)
         .toArray();
+      res.json(result);
+    });
+    app.get("/users/:email/blogs", async (req, res) => {
+      const email = req.params.email;
+      const result = await blogCollection.find({ email: email }).toArray();
       res.json(result);
     });
     // Get Overviews
