@@ -115,16 +115,12 @@ const run = async () => {
       const cursor = blogCollection.find({ status: "Approved" });
       const currentPage = parseInt(req.query.currentPage);
       const size = 5;
-      let blogs;
-      if (currentPage) {
-        blogs = await cursor
-          .skip(currentPage * size)
-          .limit(size)
-          .toArray();
-      } else {
-        blogs = await cursor.toArray();
-      }
       const count = await cursor.count();
+      let blogs;
+      blogs = await cursor
+        .skip(currentPage * size)
+        .limit(size)
+        .toArray();
       res.send({ count, blogs });
     });
     // Blogs
@@ -166,7 +162,7 @@ const run = async () => {
         .toArray();
       res.json(result);
     });
-    app.get("/users/:email/blogs", async (req, res) => {
+    app.get("/users/blogs/:email", async (req, res) => {
       const email = req.params.email;
       const result = await blogCollection.find({ email: email }).toArray();
       res.json(result);
